@@ -31,7 +31,7 @@ namespace Fusio\Adapter;
 interface AdapterInterface
 {
     /**
-     * Returns the file path of the definition.json file
+     * Returns the absolute file path of the definition.json file
      *
      * @return string
      */
