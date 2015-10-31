@@ -1,0 +1,59 @@
+{
+	"actionClass": ["Acme\\Action\\NewsAction"],
+	"connectionClass": ["Acme\\Connection\\BackendConnection"],
+	"routes": [{
+		"methods": "GET|POST|PUT|DELETE",
+		"path": "/acme/service",
+		"config":[{
+			"active": true,
+			"status": 4,
+			"name": "1",
+			"methods": [{
+				"active": true,
+				"public": true,
+				"name": "GET",
+				"action": "${action.Acme-News-Execute}",
+				"request": "${schema.Acme-News}",
+				"response": "${schema.Passthru}"
+			}]
+		}]
+	}],
+	"action": [{
+		"name": "Acme-News-Execute",
+		"class": "Acme\\Action\\NewsAction",
+		"config": {
+			"connection": "${connection.Acme-Backend}"
+		}
+	}],
+	"schema": [{
+		"name": "Acme-News",
+		"source": {
+			"id": "http://acme.com/ns",
+			"title": "news",
+			"type": "object",
+			"properties": {
+				"processId": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"content": {
+					"type": "string"
+				}
+			}
+		},
+		"validators": [{
+			"ref": "/processId",
+			"rule": "database.rowExist(${connection.Acme-Backend}, 'acme_backend_process', 'id')",
+			"message": "Process does not exist"
+		}]
+	}],
+	"connection": [{
+		"name": "Acme-Backend",
+		"class": "Acme\\Connection\\BackendConnection",
+		"config":{
+			"type": "pdo_mysql"
+		}
+	}]
+}
